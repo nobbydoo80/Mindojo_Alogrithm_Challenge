@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Island Water Flow Analysis</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Island Water Flow Analysis</h1>
+    <label for="tab-select">Choose a test case:</label>
+    <select id="tab-select">
+        <option value="case 1">Default Scenario</option>
+        <option value="case 2">Test Case 1</option>
+        <option value="case 3">Test Case 2</option>
+        <option value="case 4">Test Case 3</option>
+        <option value="case 5">Test Case 4</option>
+        <option value="case 6">Test Case 5</option>
+        <!-- Add more options for each test case -->
+    </select>
+    <button id="analyze-btn">Analyze Flow</button>
+    <div id="result"></div>
+    <h2>Sheet Data:</h2>
+    <div id="sheet-data"></div>
+    <script>
+        document.getElementById('analyze-btn').addEventListener('click', function() {
+            const tabName = document.getElementById('tab-select').value;
+            fetch(`/analysis/calculate-flow/?tab=${encodeURIComponent(tabName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerText = `Test Case: ${data.tab}, Number of qualifying cells: ${data.result}`;
+                    displaySheetData(data.sheet_data);
+                });
+        });
+
+        function displaySheetData(sheetData) {
+            const table = document.createElement('table');
+            sheetData.forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.innerText = cell;
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+            const sheetDataDiv = document.getElementById('sheet-data');
+            sheetDataDiv.innerHTML = '';  // Clear previous table
+            sheetDataDiv.appendChild(table);
+        }
+    </script>
+</body>
+</html>
